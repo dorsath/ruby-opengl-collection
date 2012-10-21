@@ -40,7 +40,7 @@ class Pokemon
   def draw_gl_scene
     glClear GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT
     glLoadIdentity
-    @world.draw()
+    @world.draw
     glLoadIdentity
     @font.print("Cool so now i can write stuff in opengl :D",0, 50)
     glLoadIdentity

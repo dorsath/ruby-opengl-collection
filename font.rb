@@ -15,17 +15,17 @@ class Font
   def print(text, x=0, y=0)
     glLoadIdentity
     glTranslate(x,y,0)
-    glEnable GL_TEXTURE_2D
 
+    glEnable GL_TEXTURE_2D
     glEnable GL_BLEND
     bytes = []
     text.each_byte do |c|
       bytes << @base + c - 32 #32 offset
     end
     glCallLists(UNSIGNED_BYTE, bytes)
-    glDisable GL_BLEND
 
     glDisable GL_TEXTURE_2D
+    glDisable GL_BLEND
   end
 
   def pointer(x,y)

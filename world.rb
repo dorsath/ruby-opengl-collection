@@ -23,18 +23,20 @@ class World
   end
   
   def draw
-    glPushMatrix
     glScale(50,50,50)
     x = 0
     y = 0
 
+    glEnable GL_TEXTURE_2D
     @map.each_with_index do |row, y|
       row.each_with_index do |tile, x|
-        draw_tile(x, y, $sprites[*tile])
+        glPushMatrix
+        glTranslate(x,y,0)
+        $sprites[*tile]
+        glPopMatrix
       end
     end
-
-    glPopMatrix
+    glDisable GL_TEXTURE_2D
   end
 
   def translate(sign)
@@ -78,26 +80,5 @@ class World
     else
       [30,30]
     end
-  end
-
-  def draw_tile(x, y, sprite)
-    glEnable GL_TEXTURE_2D
-    glBindTexture GL_TEXTURE_2D, sprite
-    glBegin GL_QUADS do
-
-      glTexCoord2d(0, 0)
-      glVertex(x,     y)
-
-      glTexCoord2d(0, 1)
-      glVertex(x,     y + 1)
-
-      glTexCoord2d(1, 1)
-      glVertex(x + 1, y +1)
-
-      glTexCoord2d(1, 0)
-      glVertex(x + 1, y)
-    end
-
-    glDisable GL_TEXTURE_2D
   end
 end
