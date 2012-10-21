@@ -20,8 +20,6 @@ class Sprites
   end
 
   def load_texture(x,y)
-    puts "loading #{x}x#{y}"
-
     texture = Magick::Image.new(TILE_SIZE, TILE_SIZE).composite(tile(x,y), 0, 0, Magick::OverCompositeOp)
 
     image = texture.to_blob do |i|
@@ -29,7 +27,7 @@ class Sprites
       i.depth = 8
     end
 
-    puts @textures[pointer(x,y)] = glGenTextures(1)
+    @textures[pointer(x,y)] = glGenTextures(1)
 
     glBindTexture GL_TEXTURE_2D, @textures[pointer(x,y)][0]
     glTexImage2D GL_TEXTURE_2D, 0, GL_RGBA, texture.rows, texture.columns, 0, GL_RGBA, GL_UNSIGNED_BYTE, image
