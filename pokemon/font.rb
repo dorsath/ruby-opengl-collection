@@ -7,7 +7,7 @@ class Font
   TILE_SIZE = 16
 
   def initialize
-    @source = Magick::ImageList.new(File.expand_path('../Font.bmp', __FILE__))
+    @source = Magick::ImageList.new(File.expand_path('../../Font.bmp', __FILE__))
     @base = 0
     @texture = nil
   end
