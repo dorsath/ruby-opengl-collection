@@ -29,7 +29,7 @@ class Sprites
       i.depth = 8
     end
 
-    @textures[pointer(x,y)] = glGenTextures 1
+    puts @textures[pointer(x,y)] = glGenTextures(1)
 
     glBindTexture GL_TEXTURE_2D, @textures[pointer(x,y)][0]
     glTexImage2D GL_TEXTURE_2D, 0, GL_RGBA, texture.rows, texture.columns, 0, GL_RGBA, GL_UNSIGNED_BYTE, image

@@ -2,6 +2,8 @@ require 'opengl'
 require_relative 'sprites'
 require_relative 'world'
 require_relative 'character'
+require_relative 'font'
+
 
 $sprites = Sprites.new
 
@@ -22,6 +24,7 @@ class Pokemon
     @character = Character.new("Ash")
 
     @world = World.new
+    @font = Font.new
 
     glutDisplayFunc :draw_gl_scene
     glutReshapeFunc :reshape
@@ -30,6 +33,7 @@ class Pokemon
 
     reshape 640, 480
     init_gl
+    @font.load
     glutMainLoop
   end
 
@@ -37,6 +41,9 @@ class Pokemon
     glClear GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT
     glLoadIdentity
     @world.draw()
+    glLoadIdentity
+    @font.print("Cool so now i can write stuff in opengl :D",0, 50)
+    glLoadIdentity
     @character.draw()
     glutSwapBuffers
   end
