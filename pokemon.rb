@@ -75,8 +75,7 @@ class Pokemon
 
     glClearDepth 1.0
     glDisable GL_DEPTH_TEST
-    glEnable GL_BLEND
-    glBlendFunc GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA
+    glBlendFunc GL_SRC_ALPHA, GL_ONE
     glHint GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST
     glHint GL_POINT_SMOOTH_HINT, GL_NICEST
   end
