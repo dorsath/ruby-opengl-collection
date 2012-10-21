@@ -22,7 +22,6 @@ class Pokemon
     @character = Character.new("Ash")
 
     @world = World.new
-    @zoom = 30
 
     glutDisplayFunc :draw_gl_scene
     glutReshapeFunc :reshape
@@ -37,10 +36,8 @@ class Pokemon
   def draw_gl_scene
     glClear GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT
     glLoadIdentity
-    glTranslate(*@window_offset,0)
-    glTranslate(0,0,-@zoom)
-    @character.draw()
     @world.draw()
+    @character.draw()
     glutSwapBuffers
   end
 
@@ -54,7 +51,8 @@ class Pokemon
     glMatrixMode GL_PROJECTION
     glLoadIdentity
 
-    gluPerspective 45, width / height, 0.1, 200
+    # gluPerspective 45, width / height, 0.1, 200
+    glOrtho(0, width, height, 0, 0, 1)
 
     glMatrixMode GL_MODELVIEW
     glLoadIdentity
@@ -71,7 +69,7 @@ class Pokemon
     glClearDepth 1.0
     glDisable GL_DEPTH_TEST
     glEnable GL_BLEND
-    glBlendFunc GL_SRC_ALPHA, GL_ONE
+    glBlendFunc GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA
     glHint GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST
     glHint GL_POINT_SMOOTH_HINT, GL_NICEST
   end
@@ -81,10 +79,6 @@ class Pokemon
     when ?\e
       glutDestroyWindow @window
       exit 0
-    when "-"
-      @zoom+=0.5
-    when "="
-      @zoom-=0.5
     when "w"
       @character.move_up
     when 's'

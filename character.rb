@@ -1,24 +1,25 @@
 class Character
   def initialize(name)
     @name = name
-    @position = [1,1]
+    @x, @y = 0, 0
+
   end
 
   def draw
     glPushMatrix
-    glTranslate(*@position,0.1)
+    glScale(50,50,50)
     glEnable GL_TEXTURE_2D
-    glBindTexture GL_TEXTURE_2D, $sprites[0,0]
+    glBindTexture GL_TEXTURE_2D, $sprites[4,0]
     glBegin GL_QUADS do
 
-      glTexCoord2d 0, 1
-      glVertex(0,0,0)
       glTexCoord2d 0, 0
-      glVertex(0,1,0)
-      glTexCoord2d 1, 0
-      glVertex(1,1,0)
+      glVertex(@x,@y,0)
+      glTexCoord2d 0, 1
+      glVertex(@x,@y + 1,0)
       glTexCoord2d 1, 1
-      glVertex(1,0,0)
+      glVertex(@x + 1,@y + 1,0)
+      glTexCoord2d 1, 0
+      glVertex(@x + 1,@y,0)
     end
     glPopMatrix
 
@@ -26,18 +27,18 @@ class Character
   end
 
   def move_up
-    @position[1] += 1
+    @y -= 1
   end
 
   def move_down
-    @position[1] -= 1
+    @y += 1
   end
 
   def move_left
-    @position[0] -= 1
+    @x -= 1
   end
 
   def move_right
-    @position[0] += 1
+    @x += 1
   end
 end

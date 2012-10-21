@@ -7,7 +7,7 @@ class Sprites
   TILE_SIZE = 16
 
   def initialize
-    @source = Magick::ImageList.new(File.expand_path('../sprites.png', __FILE__))
+    @source = Magick::ImageList.new(File.expand_path('../sprites.bmp', __FILE__))
     @textures = {}
   end
 
