@@ -8,15 +8,18 @@ class Menu
 
   def keyboard(key)
     case key
-    when ?\e
+    when 27
       game.show_menu = true
-    when ?w
+    when 101
       up
-    when ?s
+    when 103
       down
-    when ?\r
+    when 13
       select
     end
+  end
+
+  def handle_keys(keys)
   end
 
   def up

@@ -1,105 +1,112 @@
-require 'opengl'
-require_relative 'font'
-require_relative 'menu'
-
-$font = Font.new
-
 class Game
-  include Gl
-  include Glu
-  include Glut
 
-  attr_writer :show_menu
+  attr_accessor :space_invaders, :score
 
-  def initialize
-    glutInit
+  SPEED = 100
+  SHOTS_PER_MINUTE = 60
 
-    glutInitDisplayMode GLUT_RGB | GLUT_DOUBLE | GLUT_ALPHA | GLUT_DEPTH
-    glutInitWindowSize 640, 480
-    glutInitWindowPosition 0, 0
-
-    @window = glutCreateWindow "Space Invaders"
-    @menu = Menu.new(self)
-    @show_menu = true
-    @active_menu = :start
-    # @interface = Interface.new
-
-    glutDisplayFunc :draw_gl_scene
-    glutReshapeFunc :reshape
-    glutIdleFunc :idle
-    glutKeyboardFunc :keyboard
-
-    reshape 640, 480
-    init_gl
-    $font.load
-    glutMainLoop
+  def initialize(space_invaders)
+    @space_invaders = space_invaders
+    @x = 0
+    @score = 0
+    @active_keys = {}
+    @last_time = Time.now.to_f
+    @last_shot = Time.now.to_f
   end
 
-  def draw_gl_scene
-    glClear GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT
-    glLoadIdentity
-    if @show_menu
-      @menu.draw
-    else
-      draw_game
+  def load
+    load_textures
+  end
+
+  def load_textures
+    source = Magick::ImageList.new(File.expand_path('../../canon.png', __FILE__))
+    image = source.to_blob do |i|
+      i.format = "RGBA"
+      i.depth = 8
     end
 
-    glutSwapBuffers
+    @texture = glGenTextures(1)[0]
+
+    glBindTexture GL_TEXTURE_2D, @texture
+    glTexImage2D GL_TEXTURE_2D, 0, GL_RGBA, source.rows, source.columns, 0, GL_RGBA, GL_UNSIGNED_BYTE, image
+    glTexParameteri GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR
+    glTexParameteri GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR
   end
 
-  def draw_game
-    $font.print("Cool so now i can write stuff in opengl :D",0, 50)
+  def dt
+    Time.now.to_f - @last_time
   end
 
-  def reshape width, height
-    width  = width.to_f
-    height = height.to_f
-    height = 1.0 if height.zero?
-
-    glViewport 0, 0, width, height
-
-    glMatrixMode GL_PROJECTION
-    glLoadIdentity
-
-    # gluPerspective 45, width / height, 0.1, 200
-    glOrtho(0, width, height, 0, 0, 1)
-
-    glMatrixMode GL_MODELVIEW
-    glLoadIdentity
+  def keyboard(key)
+    case key
+    when 27
+      space_invaders.show_menu = true
+    end
   end
 
-  def idle
-    glutPostRedisplay
-  end
-
-  def init_gl
-    glShadeModel GL_SMOOTH
-    glClearColor 0, 0, 0, 0
-
-    glClearDepth 1.0
-    glDisable GL_DEPTH_TEST
-    glBlendFunc GL_SRC_ALPHA, GL_ONE
-    glHint GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST
-    glHint GL_POINT_SMOOTH_HINT, GL_NICEST
-  end
-
-  def exit_game
-    glutDestroyWindow @window
-    exit 0
-  end
-
-
-  def keyboard key, x, y
-    if @show_menu
-      @menu.keyboard(key)
-    else
+  def handle_keys(keys)
+    keys.each do |key, value|
       case key
-      when ?\e
-        game.show_menu = true
+      when 100
+        move_left
+      when 102
+        move_right
+      when 32
+        shoot
       end
     end
   end
 
-end
+  def draw
+    list_score
 
-Game.new
+    draw_canon
+    @last_time = Time.now.to_f
+  end
+
+  def draw_canon
+    glLoadIdentity
+    glTranslate(280 + @x,300,0)
+    glEnable GL_TEXTURE_2D
+    glBindTexture(GL_TEXTURE_2D, @texture)
+    glBegin(GL_QUADS) do
+
+      glTexCoord2d(0, 0)
+      glVertex(0, 0)
+      glTexCoord2d(1, 0)
+      glVertex(13, 0)
+      glTexCoord2d(1, 1)
+      glVertex(13, 13)
+      glTexCoord2d(0, 1)
+      glVertex(0, 13)
+    end
+
+    glTranslate(15,0,0)
+    glDisable GL_TEXTURE_2D
+  end
+
+  def shoot
+    if (Time.now.to_f - @last_shot) > (SHOTS_PER_MINUTE / 60.0)
+      @score += 1 
+      @last_shot = Time.now.to_f
+    end
+  end
+
+  def move_left
+    @x -= SPEED * dt
+  end
+
+  def move_right
+    @x += SPEED * dt
+  end
+
+  def high_score
+    9001
+  end
+
+  def list_score
+    $font.print("SCORE <#{score}>", 0, 0)
+    $font.print("HI-SCORE <#{high_score}>", 640, 0, :right)
+  end
+
+end

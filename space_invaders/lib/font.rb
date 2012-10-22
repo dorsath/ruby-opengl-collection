@@ -17,11 +17,13 @@ class Font
 
     case align
     when :left
-      glTranslate(x,y,0)
+      offset = 0
     when :center
       offset = (TILE_SIZE * text.length) / 2.0
-      glTranslate(x - offset ,y,0)
+    when :right
+      offset = (TILE_SIZE * text.length)
     end
+    glTranslate(x - offset ,y,0)
 
 
     glEnable GL_TEXTURE_2D
