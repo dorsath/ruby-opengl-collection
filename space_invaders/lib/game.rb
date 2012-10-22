@@ -3,15 +3,15 @@ class Game
   attr_accessor :space_invaders, :score
 
   SPEED = 100
-  SHOTS_PER_MINUTE = 60
+  SHOTS_PER_MINUTE = 120
 
   def initialize(space_invaders)
     @space_invaders = space_invaders
     @x = 0
     @score = 0
     @active_keys = {}
-    @last_time = Time.now.to_f
-    @last_shot = Time.now.to_f
+    @last_time = time
+    @last_shot = time
   end
 
   def load
@@ -34,7 +34,7 @@ class Game
   end
 
   def dt
-    Time.now.to_f - @last_time
+    time - @last_time
   end
 
   def keyboard(key)
@@ -61,7 +61,7 @@ class Game
     list_score
 
     draw_canon
-    @last_time = Time.now.to_f
+    @last_time = time
   end
 
   def draw_canon
@@ -86,10 +86,14 @@ class Game
   end
 
   def shoot
-    if (Time.now.to_f - @last_shot) > (SHOTS_PER_MINUTE / 60.0)
+    if (time - @last_shot) > (1 / (SHOTS_PER_MINUTE / 60.0))
       @score += 1 
-      @last_shot = Time.now.to_f
+      @last_shot = time
     end
+  end
+
+  def time
+    Time.now.to_f
   end
 
   def move_left
