@@ -1,15 +1,15 @@
 class Menu
-  attr_reader :game
+  attr_reader :base, :game
+  attr_accessor :active_menu
 
-  def initialize(game)
-    @active_menu = menu.first
+  def initialize(base, game)
+    @base = base
     @game = game
+    @active_menu = menu.first
   end
 
   def keyboard(key)
     case key
-    when 27
-      game.show_menu = true
     when 101
       up
     when 103
@@ -23,11 +23,15 @@ class Menu
   end
 
   def up
-    @active_menu = menu[(menu.index(@active_menu) - 1)]
+    @active_menu = menu[(menu.index(active_menu) - 1)]
+  end
+
+  def active_menu
+    @active_menu ||= menu.first
   end
 
   def down
-    index = menu.index(@active_menu)
+    index = menu.index(active_menu)
     if (index + 1) >= menu.length
       @active_menu = menu.first
     else
@@ -37,15 +41,24 @@ class Menu
 
   def select
     case @active_menu
-    when :start
-      game.show_menu = false
+    when :start, :restart
+      base.show_menu = false
+      game.start
+    when :continue
+      base.show_menu = false
+      game.continue
     when :exit
-      game.exit_game
+      base.exit_game
     end
+    @active_menu = nil
   end
 
   def menu
-    [:start, :exit]
+    if game.started?
+      [:continue, :restart, :exit]
+    else
+      [:start, :exit]
+    end
   end
 
   def draw
@@ -57,7 +70,7 @@ class Menu
       $font.print(title.to_s, 300, 90 + i * 20, :center)
       i += 1
 
-      if @active_menu == title
+      if active_menu == title
         glTranslate(300 - ((title.to_s.length/2) * 16), 89 + i * 20,0)
         glScale(title.to_s.length * 16,1,1)
         glBegin(GL_QUADS) do

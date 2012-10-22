@@ -20,9 +20,9 @@ class SpaceInvaders
     glutInitWindowPosition 0, 0
 
     @window = glutCreateWindow "Space Invaders"
-    @menu = Menu.new(self)
     @game = Game.new(self)
-    @show_menu = false
+    @menu = Menu.new(self, @game)
+    @show_menu = true
     @active_menu = :start
     @active_keys = {}
     # @interface = Interface.new

@@ -1,19 +1,33 @@
 class Game
 
-  attr_accessor :space_invaders, :score
+  attr_accessor :space_invaders, :score, :pauze_time
 
   SPEED = 100
   SHOTS_PER_MINUTE = 120
   BULLET_SPEED = 200
+  CANON_HEIGHT = 400
 
   def initialize(space_invaders)
     @space_invaders = space_invaders
+    @time_offset = 0.0
     @x = 280
     @score = 0
     @active_keys = {}
     @last_time = time
     @last_shot = time
     @bullet_list = nil
+    @bullets = {}
+    @started = false
+  end
+
+  def started?
+    @started
+  end
+
+  def start
+    @started = true
+    @start_time = time
+    @score = 0
     @bullets = {}
   end
 
@@ -58,6 +72,7 @@ class Game
   def keyboard(key)
     case key
     when 27
+      pauze
       space_invaders.show_menu = true
     end
   end
@@ -75,19 +90,33 @@ class Game
     end
   end
 
+  def pauze
+    @pauze_time = time
+  end
+
+  def continue
+    @time_offset = pauze_time - time
+  end
+
   def draw
     list_score
+    show_time
     draw_canon
     draw_bullets
 
     @last_time = time
   end
 
+  def show_time
+    time_played = (time - @start_time).to_i
+    $font.print("Time played <#{(time_played/60).to_i}:#{(time_played%60).to_i}>",0,464)
+  end
+
   def draw_bullets
     glLoadIdentity
     @bullets.each do |firing_time, position|
       glPushMatrix
-      glTranslate(position, bullet_position(firing_time), 0)
+      glTranslate(position + 6, bullet_position(firing_time), 0)
       glCallList(@bullet_list)
       glPopMatrix
     end
@@ -96,12 +125,12 @@ class Game
   end
 
   def bullet_position(firing_time)
-    300 - ((time - firing_time) * BULLET_SPEED)
+    CANON_HEIGHT - ((time - firing_time) * BULLET_SPEED)
   end
 
   def draw_canon
     glLoadIdentity
-    glTranslate(@x,300,0)
+    glTranslate(@x,CANON_HEIGHT,0)
     glEnable GL_TEXTURE_2D
     glBindTexture(GL_TEXTURE_2D, @texture)
     glBegin(GL_QUADS) do
@@ -128,7 +157,7 @@ class Game
   end
 
   def time
-    Time.now.to_f
+    Time.now.to_f + @time_offset
   end
 
   def move_left
