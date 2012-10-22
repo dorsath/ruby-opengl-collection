@@ -52,27 +52,29 @@ class Level
   end
 
   def draw_aliens
-    block_width = ((@aliens.length - 1) * INVADER_SPACING + (@aliens.length * 15))
 
     if (block_width + @block_x + 2 * INVADER_OFFSET > 640 || @block_x < 0)  && time_since_direction_change > 1
       @direction *= -1
-      # @block_y += 20
       @move_down = true
       @direction_change_time = game.time
     end
 
     if @move_down
-      @block_y += INVADER_SPEED * game.dt
-      if time_since_direction_change > (20 / INVADER_SPEED.to_f)
+      @block_y += invader_speed * game.dt
+      if time_since_direction_change > (20 / invader_speed.to_f)
         @move_down = false
       end
     else
-      @block_x += INVADER_SPEED * game.dt * @direction
+      @block_x += invader_speed * game.dt * @direction
     end
 
     @aliens.each_with_index do |alien, index|
       draw_alien(alien, alien_position(alien,index), @block_y) if alien
     end
+  end
+
+  def block_width
+    ((@aliens.length - 1) * INVADER_SPACING + (@aliens.length * 15))
   end
 
   def time_since_direction_change
@@ -92,7 +94,7 @@ class Level
   end
 
   def bullet_vs_aliens(bullets)
-    bullets.select do |firing_time, bullet_x|
+    hit_bullets = bullets.select do |firing_time, bullet_x|
       hit = false
       bullet_y = game.bullet_position(firing_time)
 
@@ -108,5 +110,32 @@ class Level
 
       hit
     end
+
+    refit_alien_array
+
+    hit_bullets
+  end
+
+  def refit_alien_array
+    while @aliens.first.nil? && @aliens.any?
+      @aliens.delete_at(0)
+      @block_x += INVADER_SPACING + 15
+    end
+
+    while @aliens.last.nil? && @aliens.any?
+      @aliens.delete_at(@aliens.length - 1)
+    end
+  end
+
+  def invader_speed
+    multiplyer = case @aliens.compact.length
+    when 1
+      3
+    when (2..4)
+      2
+    else
+      1
+    end
+    INVADER_SPEED * multiplyer
   end
 end
