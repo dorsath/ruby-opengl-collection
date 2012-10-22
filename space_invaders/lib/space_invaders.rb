@@ -2,6 +2,7 @@ require 'opengl'
 require_relative 'font'
 require_relative 'menu'
 require_relative 'game'
+require_relative 'texture_loader'
 
 $font = Font.new
 

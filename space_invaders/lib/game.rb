@@ -1,3 +1,5 @@
+require_relative 'level'
+
 class Game
 
   attr_accessor :space_invaders, :score, :pauze_time
@@ -18,6 +20,12 @@ class Game
     @bullet_list = nil
     @bullets = {}
     @started = false
+
+    @levels = [
+      [2,2,2,2,2,2,2,2,2],
+      [1,1,1,1,1,1,1,1,1],
+      [0,0,0,0,0,0,0,0,0]
+    ]
   end
 
   def started?
@@ -29,8 +37,14 @@ class Game
     @start_time = time
     @score = 0
     @bullets = {}
+
+    start_level
   end
 
+  def start_level(level = 0)
+    @level = Level.new(@levels[level], self)
+  end
+  
   def load
     load_textures
 
@@ -38,18 +52,7 @@ class Game
   end
 
   def load_textures
-    source = Magick::ImageList.new(File.expand_path('../../canon.png', __FILE__))
-    image = source.to_blob do |i|
-      i.format = "RGBA"
-      i.depth = 8
-    end
-
-    @texture = glGenTextures(1)[0]
-
-    glBindTexture GL_TEXTURE_2D, @texture
-    glTexImage2D GL_TEXTURE_2D, 0, GL_RGBA, source.rows, source.columns, 0, GL_RGBA, GL_UNSIGNED_BYTE, image
-    glTexParameteri GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR
-    glTexParameteri GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR
+    @canon  = TextureLoader.load('../../canon.png')
   end
 
   def create_bullet_list
@@ -64,6 +67,7 @@ class Game
     end
     glEndList
   end
+
 
   def dt
     time - @last_time
@@ -104,8 +108,15 @@ class Game
     draw_canon
     draw_bullets
 
+    @level.draw
     @last_time = time
   end
+
+  
+  def time_since_direciton_change
+    time - @direction_change_time
+  end
+
 
   def show_time
     time_played = (time - @start_time).to_i
@@ -132,7 +143,7 @@ class Game
     glLoadIdentity
     glTranslate(@x,CANON_HEIGHT,0)
     glEnable GL_TEXTURE_2D
-    glBindTexture(GL_TEXTURE_2D, @texture)
+    glBindTexture(GL_TEXTURE_2D, @canon)
     glBegin(GL_QUADS) do
 
       glTexCoord2d(0, 0)
