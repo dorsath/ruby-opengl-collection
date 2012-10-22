@@ -86,7 +86,7 @@ class Game
   end
 
   def shoot
-    if (time - @last_shot) > (1 / (SHOTS_PER_MINUTE / 60.0))
+    if (time - @last_shot) > (60 / SHOTS_PER_MINUTE.to_f)
       @score += 1 
       @last_shot = time
     end
