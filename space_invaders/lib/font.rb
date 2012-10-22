@@ -14,6 +14,7 @@ class Font
 
   def print(text, x=0, y=0, align = :left)
     glPushMatrix
+    glColor(1,1,1)
 
     case align
     when :left

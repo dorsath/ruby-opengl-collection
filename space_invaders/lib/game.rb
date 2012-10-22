@@ -4,18 +4,23 @@ class Game
 
   SPEED = 100
   SHOTS_PER_MINUTE = 120
+  BULLET_SPEED = 200
 
   def initialize(space_invaders)
     @space_invaders = space_invaders
-    @x = 0
+    @x = 280
     @score = 0
     @active_keys = {}
     @last_time = time
     @last_shot = time
+    @bullet_list = nil
+    @bullets = {}
   end
 
   def load
     load_textures
+
+    create_bullet_list
   end
 
   def load_textures
@@ -31,6 +36,19 @@ class Game
     glTexImage2D GL_TEXTURE_2D, 0, GL_RGBA, source.rows, source.columns, 0, GL_RGBA, GL_UNSIGNED_BYTE, image
     glTexParameteri GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR
     glTexParameteri GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR
+  end
+
+  def create_bullet_list
+    @bullet_list = glGenLists(1)
+    glNewList(@bullet_list, GL_COMPILE)
+    glBegin(GL_QUADS) do
+      glColor(0,1,0)
+      glVertex(0,10,0)
+      glVertex(1,10,0)
+      glVertex(1,0,0)
+      glVertex(0,0,0)
+    end
+    glEndList
   end
 
   def dt
@@ -59,14 +77,31 @@ class Game
 
   def draw
     list_score
-
     draw_canon
+    draw_bullets
+
     @last_time = time
+  end
+
+  def draw_bullets
+    glLoadIdentity
+    @bullets.each do |firing_time, position|
+      glPushMatrix
+      glTranslate(position, bullet_position(firing_time), 0)
+      glCallList(@bullet_list)
+      glPopMatrix
+    end
+
+    @bullets = @bullets.reject{ |firing_time, position| bullet_position(firing_time) < 0 }
+  end
+
+  def bullet_position(firing_time)
+    300 - ((time - firing_time) * BULLET_SPEED)
   end
 
   def draw_canon
     glLoadIdentity
-    glTranslate(280 + @x,300,0)
+    glTranslate(@x,300,0)
     glEnable GL_TEXTURE_2D
     glBindTexture(GL_TEXTURE_2D, @texture)
     glBegin(GL_QUADS) do
@@ -87,7 +122,7 @@ class Game
 
   def shoot
     if (time - @last_shot) > (60 / SHOTS_PER_MINUTE.to_f)
-      @score += 1 
+      @bullets[time] = @x
       @last_shot = time
     end
   end
