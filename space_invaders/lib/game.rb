@@ -6,7 +6,7 @@ class Game
 
   SPEED = 100
   SHOTS_PER_MINUTE = 120
-  BULLET_SPEED = 200
+  BULLET_SPEED = 300
   CANON_HEIGHT = 400
 
   def initialize(space_invaders)
@@ -107,16 +107,12 @@ class Game
     show_time
     draw_canon
     draw_bullets
-
     @level.draw
+
     @last_time = time
   end
 
   
-  def time_since_direciton_change
-    time - @direction_change_time
-  end
-
 
   def show_time
     time_played = (time - @start_time).to_i
@@ -124,6 +120,9 @@ class Game
   end
 
   def draw_bullets
+    check_bullet_hits
+
+
     glLoadIdentity
     @bullets.each do |firing_time, position|
       glPushMatrix
@@ -133,6 +132,12 @@ class Game
     end
 
     @bullets = @bullets.reject{ |firing_time, position| bullet_position(firing_time) < 0 }
+  end
+
+  def check_bullet_hits
+    @level.bullet_vs_aliens(@bullets).each do |firing_time, position|
+      @bullets.delete(firing_time)
+    end
   end
 
   def bullet_position(firing_time)

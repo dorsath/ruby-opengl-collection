@@ -2,6 +2,7 @@ class Level
   attr_reader :game
 
   INVADER_SPACING = 20
+  INVADER_OFFSET = 50
   INVADER_SPEED = 100
 
   def initialize(aliens, game)
@@ -51,10 +52,9 @@ class Level
   end
 
   def draw_aliens
-    offset = 50
     block_width = ((@aliens.length - 1) * INVADER_SPACING + (@aliens.length * 15))
 
-    if (block_width + @block_x + 2 * offset > 640 || @block_x < 0)  && time_since_direction_change > 1
+    if (block_width + @block_x + 2 * INVADER_OFFSET > 640 || @block_x < 0)  && time_since_direction_change > 1
       @direction *= -1
       # @block_y += 20
       @move_down = true
@@ -71,7 +71,7 @@ class Level
     end
 
     @aliens.each_with_index do |alien, index|
-      draw_alien(alien, @block_x + offset + (index * (15 + INVADER_SPACING)), @block_y)
+      draw_alien(alien, alien_position(alien,index), @block_y) if alien
     end
   end
 
@@ -85,5 +85,28 @@ class Level
     glEnable GL_TEXTURE_2D
     glCallList(@alien_lists[id])
     glDisable GL_TEXTURE_2D
+  end
+
+  def alien_position(alien, index)
+    @block_x + INVADER_OFFSET + (index * (15 + INVADER_SPACING)) - 7.5
+  end
+
+  def bullet_vs_aliens(bullets)
+    bullets.select do |firing_time, bullet_x|
+      hit = false
+      bullet_y = game.bullet_position(firing_time)
+
+      if (bullet_y - @block_y).abs < 20
+        @aliens.each_with_index do |alien, index|
+          if alien && (bullet_x - alien_position(alien, index)).abs < 7.5
+            @aliens[index] = nil
+            hit = true
+            game.score += 1
+          end
+        end
+      end
+
+      hit
+    end
   end
 end
