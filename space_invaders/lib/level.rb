@@ -26,6 +26,7 @@ class Level
   end
 
   def draw
+    game.next_level if @aliens.compact.empty?
     draw_aliens
   end
 
@@ -52,7 +53,6 @@ class Level
   end
 
   def draw_aliens
-
     if (block_width + @block_x + 2 * INVADER_OFFSET > 640 || @block_x < 0)  && time_since_direction_change > 1
       @direction *= -1
       @move_down = true

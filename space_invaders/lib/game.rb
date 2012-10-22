@@ -41,7 +41,12 @@ class Game
     start_level
   end
 
+  def next_level
+    start_level(@level_nr + 1)
+  end
+
   def start_level(level = 0)
+    @level_nr = level
     @level = Level.new(@levels[level], self)
   end
   
