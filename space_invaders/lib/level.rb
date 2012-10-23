@@ -6,12 +6,14 @@ class Level
   INVADER_SPEED = 100
 
   def initialize(aliens, game)
-    @aliens = aliens
+    @aliens = aliens.to_enum(:each_with_index).map { |alien, position| {position: position, type: alien }}
+
     @game = game
     @alien_lists = []
 
     load_textures
     create_enemies_lists
+    create_bomb_list
 
     @block_x = 0
     @block_y = 100
@@ -27,7 +29,9 @@ class Level
 
   def draw
     game.next_level if @aliens.compact.empty?
+
     draw_aliens
+    alien_bombs
   end
 
   def create_enemies_lists
@@ -52,6 +56,30 @@ class Level
     end
   end
 
+  def create_bomb_list
+    @bomb_list = glGenLists(1)
+    glNewList(@bomb_list, GL_COMPILE)
+    glBegin(GL_QUADS) do
+      glColor(1,1,1)
+      glVertex(0,10,0)
+      glVertex(1,10,0)
+      glVertex(1,0,0)
+      glVertex(0,0,0)
+    end
+    glEndList
+  end
+
+  def aliens_left
+    @aliens.compact
+  end
+
+  def alien_bombs
+    # if (game.time - @last_bomb) > (60/ BOMBS_PER_MINUTE.to_f)
+    #   rand(0, aliens_left.length)
+    #   @last_bomb = game.time
+    # end
+  end
+
   def draw_aliens
     if (block_width + @block_x + 2 * INVADER_OFFSET > 640 || @block_x < 0)  && time_since_direction_change > 1
       @direction *= -1
@@ -68,8 +96,8 @@ class Level
       @block_x += invader_speed * game.dt * @direction
     end
 
-    @aliens.each_with_index do |alien, index|
-      draw_alien(alien, alien_position(alien,index), @block_y) if alien
+    @aliens.each do |alien|
+      draw_alien(alien[:type], alien_position(alien), @block_y) if alien
     end
   end
 
@@ -89,8 +117,9 @@ class Level
     glDisable GL_TEXTURE_2D
   end
 
-  def alien_position(alien, index)
-    @block_x + INVADER_OFFSET + (index * (15 + INVADER_SPACING)) - 7.5
+  def alien_position(alien)
+    position = alien[:position] - (alien[:position] - @aliens.index(alien))
+    @block_x + INVADER_OFFSET + (position * (15 + INVADER_SPACING)) - 7.5
   end
 
   def bullet_vs_aliens(bullets)
@@ -100,7 +129,7 @@ class Level
 
       if (bullet_y - @block_y).abs < 20
         @aliens.each_with_index do |alien, index|
-          if alien && (bullet_x - alien_position(alien, index)).abs < 7.5
+          if alien && (bullet_x - alien_position(alien)).abs < 7.5
             @aliens[index] = nil
             hit = true
             game.score += 1
@@ -128,7 +157,7 @@ class Level
   end
 
   def invader_speed
-    multiplyer = case @aliens.compact.length
+    multiplyer = case aliens_left.length
     when 1
       3
     when (2..4)
