@@ -2,7 +2,7 @@ require_relative 'level'
 
 class Game
 
-  attr_accessor :space_invaders, :score, :pauze_time
+  attr_accessor :space_invaders, :score, :pauze_time, :x
 
   SPEED = 200
   SHOTS_PER_MINUTE = 120
@@ -28,6 +28,22 @@ class Game
     ]
   end
 
+  def game_over
+    @level = nil
+    @started = false
+    space_invaders.show_menu = true
+  end
+
+  def died
+    if @lives > 0
+      @lives -= 1
+      start_level(@level_nr)
+
+    else
+      game_over
+    end
+  end
+
   def started?
     @started
   end
@@ -37,6 +53,7 @@ class Game
     @start_time = time
     @score = 0
     @bullets = {}
+    @lives = 3
 
     start_level
   end
@@ -54,6 +71,7 @@ class Game
     load_textures
 
     create_bullet_list
+    create_canon_list
   end
 
   def load_textures
@@ -71,6 +89,25 @@ class Game
       glVertex(0,0,0)
     end
     glEndList
+  end
+
+  def create_canon_list
+    @canon_list = glGenLists(1)
+    glNewList(@canon_list, GL_COMPILE)
+    glBindTexture(GL_TEXTURE_2D, @canon)
+    glBegin(GL_QUADS) do
+
+      glTexCoord2d(0, 0)
+      glVertex(0, 0)
+      glTexCoord2d(1, 0)
+      glVertex(13, 0)
+      glTexCoord2d(1, 1)
+      glVertex(13, 13)
+      glTexCoord2d(0, 1)
+      glVertex(0, 13)
+    end
+    glEndList
+
   end
 
 
@@ -112,16 +149,25 @@ class Game
     show_time
     draw_canon
     draw_bullets
-    @level.draw
+    draw_lives
+    @level.draw if @level
 
     @last_time = time
   end
 
-  
+  def draw_lives
+    @lives.times do |i|
+      glLoadIdentity
+      glEnable(GL_TEXTURE_2D)
+      glTranslate(50+30 * i,464,0)
+      glCallList(@canon_list)
+      glDisable(GL_TEXTURE_2D)
+    end
+  end
 
   def show_time
     time_played = (time - @start_time).to_i
-    $font.print("Time played <#{(time_played/60).to_i}:#{(time_played%60).to_i}>",0,464)
+    $font.print("Time played <#{(time_played/60).to_i}:#{"%02d" % (time_played%60).to_i}>",350,464)
   end
 
   def draw_bullets
@@ -153,20 +199,7 @@ class Game
     glLoadIdentity
     glTranslate(@x,CANON_HEIGHT,0)
     glEnable GL_TEXTURE_2D
-    glBindTexture(GL_TEXTURE_2D, @canon)
-    glBegin(GL_QUADS) do
-
-      glTexCoord2d(0, 0)
-      glVertex(0, 0)
-      glTexCoord2d(1, 0)
-      glVertex(13, 0)
-      glTexCoord2d(1, 1)
-      glVertex(13, 13)
-      glTexCoord2d(0, 1)
-      glVertex(0, 13)
-    end
-
-    glTranslate(15,0,0)
+    glCallList(@canon_list)
     glDisable GL_TEXTURE_2D
   end
 

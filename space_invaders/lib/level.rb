@@ -25,6 +25,7 @@ class Level
     @last_bomb = game.time
   end
 
+
   def load_textures
     @alien_textures = (0..2).map do |id|
       TextureLoader.load("../../alien#{id + 1}.png")
@@ -36,6 +37,7 @@ class Level
 
     draw_aliens
     draw_bombs
+    check_bomb_hits
 
     alien_bombs
   end
@@ -161,6 +163,12 @@ class Level
     refit_alien_array
 
     hit_bullets
+  end
+
+  def check_bomb_hits
+    @bombs.each do |bomb|
+      game.died if ((bomb[1] - Game::CANON_HEIGHT).abs < 10 && (game.x - bomb[0]).abs < 10)
+    end
   end
 
   def refit_alien_array
