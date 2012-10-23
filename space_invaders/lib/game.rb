@@ -4,7 +4,7 @@ class Game
 
   attr_accessor :space_invaders, :score, :pauze_time
 
-  SPEED = 100
+  SPEED = 200
   SHOTS_PER_MINUTE = 120
   BULLET_SPEED = 300
   CANON_HEIGHT = 400

@@ -4,6 +4,8 @@ class Level
   INVADER_SPACING = 20
   INVADER_OFFSET = 50
   INVADER_SPEED = 100
+  BOMBS_PER_MINUTE = 60
+  BOMB_VELOCITY = 100
 
   def initialize(aliens, game)
     @aliens = aliens.to_enum(:each_with_index).map { |alien, position| {position: position, type: alien }}
@@ -18,7 +20,9 @@ class Level
     @block_x = 0
     @block_y = 100
     @direction = 1
+    @bombs = []
     @direction_change_time = game.time
+    @last_bomb = game.time
   end
 
   def load_textures
@@ -31,6 +35,8 @@ class Level
     game.next_level if @aliens.compact.empty?
 
     draw_aliens
+    draw_bombs
+
     alien_bombs
   end
 
@@ -74,10 +80,22 @@ class Level
   end
 
   def alien_bombs
-    # if (game.time - @last_bomb) > (60/ BOMBS_PER_MINUTE.to_f)
-    #   rand(0, aliens_left.length)
-    #   @last_bomb = game.time
-    # end
+    if (game.time - @last_bomb) > (60/ BOMBS_PER_MINUTE.to_f)
+      bombing_alien = aliens_left[rand(0..(aliens_left.length - 1))]
+      @bombs << [alien_position(bombing_alien), @block_y + 15]
+      @last_bomb = game.time
+    end
+  end
+
+  def draw_bombs
+    @bombs.each do |bomb|
+      glLoadIdentity
+      bomb[1] += BOMB_VELOCITY * game.dt
+      glTranslate(bomb[0] + 7.5, bomb[1], 0)
+      glCallList(@bomb_list)
+    end
+
+    @bombs = @bombs.reject { |bomb| bomb[1] > 480 }
   end
 
   def draw_aliens
