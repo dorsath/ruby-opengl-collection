@@ -4,11 +4,13 @@ class Level
   INVADER_SPACING = 20
   INVADER_OFFSET = 50
   INVADER_SPEED = 100
-  BOMBS_PER_MINUTE = 500
+  BOMBS_PER_MINUTE = 2000
   BOMB_VELOCITY = 300
 
   def initialize(aliens, game)
-    @aliens = aliens.to_enum(:each_with_index).map { |alien, position| {position: position, type: alien }}
+    @aliens = aliens.to_enum(:each_with_index).map do |row, row_number|
+      row.to_enum(:each_with_index).map { |alien, position| {position: position, type: alien, row: row_number}}
+    end
 
     @game = game
     @alien_lists = []
@@ -78,7 +80,7 @@ class Level
   end
 
   def aliens_left
-    @aliens.compact
+    @aliens.flatten.compact
   end
 
   def alien_bombs
@@ -116,13 +118,20 @@ class Level
       @block_x += invader_speed * game.dt * @direction
     end
 
-    @aliens.each do |alien|
-      draw_alien(alien[:type], alien_position(alien), @block_y) if alien
+    y = @block_y
+    @aliens.each do |row|
+
+      row.each do |alien|
+        draw_alien(alien[:type], alien_position(alien), y) if alien
+      end
+
+      y += 20
     end
   end
 
   def block_width
-    ((@aliens.length - 1) * INVADER_SPACING + (@aliens.length * 15))
+    aliens_length = @aliens.map(&:length).sort.last
+    ((aliens_length - 1) * INVADER_SPACING + (aliens_length * 15))
   end
 
   def time_since_direction_change
@@ -138,7 +147,7 @@ class Level
   end
 
   def alien_position(alien)
-    position = alien[:position] - (alien[:position] - @aliens.index(alien))
+    position = alien[:position] - (alien[:position] - @aliens[alien[:row]].index(alien))
     @block_x + INVADER_OFFSET + (position * (15 + INVADER_SPACING)) - 7.5
   end
 
@@ -147,14 +156,20 @@ class Level
       hit = false
       bullet_y = game.bullet_position(firing_time)
 
-      if (bullet_y - @block_y).abs < 20
-        @aliens.each_with_index do |alien, index|
-          if alien && (bullet_x - alien_position(alien)).abs < 7.5
-            @aliens[index] = nil
-            hit = true
-            game.score += 1
+      @aliens.each_with_index do |row, row_number|
+        if (bullet_y - (@block_y + row_number * 20)).abs < 20
+          row.each_with_index do |alien, index|
+            if alien && (bullet_x - alien_position(alien)).abs < 7.5
+              row[index] = nil
+              hit = true
+              game.score += 1
+              break
+            end
           end
+
         end
+
+        break if hit
       end
 
       hit
@@ -172,13 +187,17 @@ class Level
   end
 
   def refit_alien_array
-    while @aliens.first.nil? && @aliens.any?
-      @aliens.delete_at(0)
-      @block_x += INVADER_SPACING + 15
+    while @aliens.any? && @aliens.map(&:first).compact.empty?
+      @aliens.each do |row|
+        row.delete_at(0)
+      end
+      @block_x += INVADER_SPACING + 15 
     end
 
-    while @aliens.last.nil? && @aliens.any?
-      @aliens.delete_at(@aliens.length - 1)
+    @aliens.each do |row|
+      while row.last.nil? && row.any?
+        row.delete_at(row.length - 1)
+      end
     end
   end
 
