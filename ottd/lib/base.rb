@@ -28,6 +28,9 @@ class Base
 
     reshape 640, 480
     init_gl
+  end
+
+  def start
     glutMainLoop
   end
 
@@ -40,11 +43,13 @@ class Base
     #glTranslate((640 - 100) /2, 100, -480)
     #glRotate(45,-1,0,0)
     #glRotate(45,0,0,1)
+
     draw
 
     glutSwapBuffers
     @last_time = time
   end
+
 
   def time
     Time.now.to_f
@@ -103,14 +108,13 @@ class Base
   end
 
   def show_fps
-    @avg ||= "fuck you"
-    fps_elements << (1/dt)
-    glColor(1,1,1)
+    @avg ||= "loading..."
 
-    glLoadIdentity
+    fps_elements << dt
     fps_elements.shift if fps_elements.length > 60
+
     if (time - fps_last_time) > 1
-      @avg = (fps_elements.inject(:+)/fps_elements.length).floor.to_s
+      @avg = (1/(fps_elements.inject(:+)/fps_elements.length)).floor.to_s
       @fps_last_time = time
     end
     $font.print(@avg, 0, 0)

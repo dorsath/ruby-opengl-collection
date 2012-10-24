@@ -3,8 +3,10 @@ require_relative 'tiles'
 
 class Ottd < Base
   def initialize
-    @tiles = Tiles.new
     super
+    @tiles = Tiles.new
+
+    start
   end
 
   def draw
