@@ -1,0 +1,4 @@
+#!/usr/bin/env ruby
+
+require 'opengl'
+require_relative 'lib/space_invaders'

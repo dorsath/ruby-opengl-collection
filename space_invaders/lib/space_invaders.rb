@@ -1,4 +1,3 @@
-require 'opengl'
 require_relative 'font'
 require_relative 'menu'
 require_relative 'game'
