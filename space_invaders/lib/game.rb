@@ -5,7 +5,7 @@ class Game
 
   attr_accessor :space_invaders, :score, :pauze_time, :x
 
-  SPEED = 800
+  SPEED = 200
   SHOTS_PER_MINUTE = 220
   BULLET_SPEED = 300
   CANON_HEIGHT = 400
@@ -159,12 +159,12 @@ class Game
 
   def draw
     list_score
-    draw_canon
     show_time
     draw_bullets
     draw_lives
     @level.draw if @level
 
+    draw_canon
     @last_time = time
   end
 
