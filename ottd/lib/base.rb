@@ -103,17 +103,17 @@ class Base
   end
 
   def show_fps
-    @avg ||= "fuck you"
-    fps_elements << (1/dt)
+    @fps ||= "fuck you"
+    fps_elements << (dt)
     glColor(1,1,1)
 
     glLoadIdentity
-    fps_elements.shift if fps_elements.length > 60
-    if (time - fps_last_time) > 1
-      @avg = (fps_elements.inject(:+)/fps_elements.length).floor.to_s
-      @fps_last_time = time
+    puts fps_elements.inject(:+)
+    if fps_elements.inject(:+) > 0.1
+      @fps = fps_elements.length.to_s
+      @fps_elements = []
     end
-    $font.print(@avg, 0, 0)
+    $font.print(@fps, 0, 0)
   end
 
   def fps_last_time
