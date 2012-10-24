@@ -1,11 +1,12 @@
 require_relative 'level'
+require_relative 'score'
 
 class Game
 
   attr_accessor :space_invaders, :score, :pauze_time, :x
 
-  SPEED = 200
-  SHOTS_PER_MINUTE = 120
+  SPEED = 400
+  SHOTS_PER_MINUTE = 220
   BULLET_SPEED = 300
   CANON_HEIGHT = 400
 
@@ -29,6 +30,7 @@ class Game
   end
 
   def game_over
+    Score.save(@score)
     @level = nil
     @started = false
     space_invaders.show_menu = true
@@ -54,6 +56,7 @@ class Game
     @score = 0
     @bullets = {}
     @lives = 3
+    @high_score = nil #allow for a reset
 
     start_level
   end
@@ -146,8 +149,8 @@ class Game
 
   def draw
     list_score
-    show_time
     draw_canon
+    show_time
     draw_bullets
     draw_lives
     @level.draw if @level
@@ -223,7 +226,7 @@ class Game
   end
 
   def high_score
-    9001
+    @high_score ||= Score.high_score
   end
 
   def list_score

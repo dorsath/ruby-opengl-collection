@@ -4,8 +4,8 @@ class Level
   INVADER_SPACING = 20
   INVADER_OFFSET = 50
   INVADER_SPEED = 100
-  BOMBS_PER_MINUTE = 60
-  BOMB_VELOCITY = 100
+  BOMBS_PER_MINUTE = 500
+  BOMB_VELOCITY = 300
 
   def initialize(aliens, game)
     @aliens = aliens.to_enum(:each_with_index).map { |alien, position| {position: position, type: alien }}
