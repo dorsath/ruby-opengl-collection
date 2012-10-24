@@ -7,6 +7,7 @@ class Score
   end
 
   def self.read
+    File.open(@file, "w").write("") unless File.exists?(@file)
     File.open(@file).read.split(';').map do |score_line|
       score_line.split(': ')
     end
