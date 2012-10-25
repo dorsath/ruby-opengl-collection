@@ -32,10 +32,11 @@ class Tile
     y0 = 0
     x1 = 50 * -x
     y1 = 50 * -x * r2
-    x2 = 50 * -x + 50 * y
-    y2 = (50 * -y + 50 * -x) * r2
     x3 = 50 *  y
     y3 = 50 * -y * r2
+
+    x2 = x1 + x3
+    y2 = y1 + y3
 
     glBegin(GL_LINE_LOOP) do
       glVertex(x0, y0)
@@ -47,7 +48,8 @@ class Tile
     glEndList
   end
 
-  def r2
+  #compensation for tilting the z axis 45 degrees
+  def r2 
     0.5 * Math.sqrt(2)
   end
 end
