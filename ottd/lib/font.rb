@@ -27,6 +27,7 @@ class Font
     glTranslate(x - offset ,y,0)
 
 
+    glBlendFunc GL_SRC_ALPHA, GL_ONE
     glEnable GL_TEXTURE_2D
     glEnable GL_BLEND
 

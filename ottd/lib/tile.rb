@@ -21,16 +21,27 @@ class Tile
     glTranslate(TILE_SIZE * -x + TILE_SIZE * y, (TILE_SIZE * -x + TILE_SIZE * -y) * r2 , 0)
 
     glColor(*color)
+    glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA)
+    glEnable GL_BLEND
     glEnable GL_TEXTURE_2D
     glCallList(@tile_list)
     glDisable GL_TEXTURE_2D
+    glDisable GL_BLEND
     glPopMatrix
   end
 
   def load_texture
     @source = Magick::ImageList.new(File.expand_path("../../textures/#{image_file}", __FILE__))
-    # p @source.first.class
-    # p [@source.columns, @source.rows]
+
+    transparent_pixel = Magick::Pixel.new
+    transparent_pixel.opacity = 65408
+
+    @source.first.each_pixel do |pixel, x, y|
+      if pixel.hash == 65408
+        @source.first.store_pixels(x,y,1,1, [transparent_pixel])
+      end
+    end
+
     image_data = @source.to_blob do |i|
       i.format = "RGBA"
       i.depth = 8

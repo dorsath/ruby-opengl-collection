@@ -9,6 +9,8 @@ class Tiles
 
 
   def draw
+    @building.draw(2,0)
+    @building.draw(1,0)
     @building.draw
     # 5.times do |x|
     #   5.times do |y|

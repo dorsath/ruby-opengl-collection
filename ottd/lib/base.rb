@@ -86,7 +86,6 @@ class Base
 
     glClearDepth 1.0
     glDisable GL_DEPTH_TEST
-    glBlendFunc GL_SRC_ALPHA, GL_ONE
     glHint GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST
     glHint GL_POINT_SMOOTH_HINT, GL_NICEST
   end
