@@ -4,7 +4,7 @@ class Tiles
 
   def initialize
     # @tile = Tile.new
-    @building = Tile.new("building1.png", 5,2)
+    @building = Tile.new("building1.png", 1,2)
   end
 
 
