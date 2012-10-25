@@ -8,16 +8,15 @@ class Tiles
       Tile.new("building1.png", 1,2),
       Tile.new("building2.png", 1,2)
     ]
+    @road = Tile.new("road.png", 1,1)
   end
 
 
   def draw
-    @buildings[0].draw(2,0)
-    @buildings[1].draw(1,0)
-    @buildings[0].draw
-    # 5.times do |x|
-    #   5.times do |y|
-    #   end
-    # end
+    @buildings[0].draw(2,1)
+    @buildings[1].draw(1,1)
+    (1..5).to_a.reverse.each do |x|
+      @road.draw(x,0)
+    end
   end
 end
