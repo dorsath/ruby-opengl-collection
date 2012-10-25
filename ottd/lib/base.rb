@@ -108,7 +108,6 @@ class Base
     glColor(1,1,1)
 
     glLoadIdentity
-    puts fps_elements.inject(:+)
     if fps_elements.inject(:+) > 0.1
       @fps = fps_elements.length.to_s
       @fps_elements = []

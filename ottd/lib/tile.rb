@@ -1,6 +1,9 @@
 class Tile
-  def initialize(given_x,given_y)
-    color = [rand, rand, rand]
+  def color
+    [rand, rand, rand]
+  end
+
+  def initialize(given_x,given_y, texture = nil)
     x = (-given_y * 50 + given_x * 50)
     y = (-given_y * 50 + -given_x * 50)
 
@@ -12,7 +15,7 @@ class Tile
     y2 = y - 50 * r2
     y3 = y - 100 * r2
 
-    glColor(*color)
+    glColor(color)
     glBegin(GL_QUADS) do
       glVertex(x ,y ,0)
       glVertex(x2,y2 ,0)
