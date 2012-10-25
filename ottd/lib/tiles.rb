@@ -9,14 +9,20 @@ class Tiles
       Sprite.new("building1.png", 1,2),
       Sprite.new("building2.png", 1,2)
     ]
-    @road = Sprite.new("road.png", 1,1)
+    @road  = Sprite.new("road.png", 1,1)
+    @grass = Sprite.new("grass.png", 1,1)
 
     @grid = []
+    10.times do |x|
+      10.times do |y|
+        add_building(@grass,x,y)
+      end
+    end
 
-    add_building(@road, 0,0)
-    add_building(@road, 1,0)
-    add_building(@road, 2,0)
-    add_building(@road, 3,0)
+    5.times do |x|
+      add_building(@road, x,0)
+      add_building(@buildings[0],x, 1)
+    end
   end
 
   def add_building(sprite, x, y)
@@ -25,8 +31,8 @@ class Tiles
   end
 
   def draw
-    @grid.each_with_index do |row, x|
-      row.each_with_index do |tile, y|
+    @grid.reverse.each_with_index do |row, x|
+      row.reverse.each_with_index do |tile, y|
         tile.draw
       end
     end
@@ -34,7 +40,6 @@ class Tiles
 
   def highlight_tile(tile)
     if tile != @last_highlight
-      
       tile.highlight = true if tile
       @last_highlight.highlight = false if @last_highlight
 

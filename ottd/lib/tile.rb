@@ -8,17 +8,9 @@ class Tile
   end
 
   def draw
-    @sprite.draw(@x,@y) do
-      draw_highlight if @highlight
+    @sprite.draw(@x,@y) do |sprite|
+      sprite.draw_highlight if @highlight
     end
   end
 
-  def draw_highlight
-    glBegin(GL_LINE_LOOP) do
-      glVertex(0,0)
-      glVertex(-32,-16)
-      glVertex(0, -32)
-      glVertex( 32, -16)
-    end
-  end
 end

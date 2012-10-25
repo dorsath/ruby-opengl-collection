@@ -28,11 +28,19 @@ class Sprite
     glDisable GL_TEXTURE_2D
     glDisable GL_BLEND
 
-    yield if block_given?
+    yield(self) if block_given?
 
     glPopMatrix
   end
 
+  def draw_highlight
+    glBegin(GL_LINE_LOOP) do
+      glVertex(0,0)
+      glVertex(-TILE_SIZE,-TILE_SIZE*r2)
+      glVertex(0, -TILE_SIZE)
+      glVertex( TILE_SIZE, -TILE_SIZE*r2)
+    end
+  end
 
   def load_texture
     @source = Magick::ImageList.new(File.expand_path("../../textures/#{image_file}", __FILE__))
