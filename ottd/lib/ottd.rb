@@ -15,7 +15,8 @@ class Ottd < Base
   end
 
   def mouse_handler(button, state, x, y)
-    p @tiles.get_tile_coordinates_of_position(x,y)
+    tile = @tiles.get_tile_from_absolute(x,y)
+    tile.toggle_hide if tile
   end
 
 end
