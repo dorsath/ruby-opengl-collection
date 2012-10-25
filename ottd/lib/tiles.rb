@@ -32,6 +32,16 @@ class Tiles
     end
   end
 
+  def highlight_tile(tile)
+    if tile != @last_highlight
+      
+      tile.highlight = true if tile
+      @last_highlight.highlight = false if @last_highlight
+
+      @last_highlight = tile
+    end
+  end
+
   def get_tile_from_absolute(x,y)
     x, y = get_tile_coordinates_of_position(x,y)
     if @grid[x].is_a?(Array) && !@grid[x][y].nil?

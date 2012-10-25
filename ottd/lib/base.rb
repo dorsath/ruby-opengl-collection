@@ -25,6 +25,7 @@ class Base
     glutSpecialFunc :keyboard
     glutSpecialUpFunc :keyboard_up
     glutMouseFunc :mouse
+    glutPassiveMotionFunc :mouse_movement
     $font.load
 
     reshape 640, 480
@@ -111,6 +112,10 @@ class Base
     if args[1] == 1
       mouse_handler(*args)
     end
+  end
+
+  def mouse_movement(*args)
+    mouse_movement_handler(*args)
   end
 
   def show_fps

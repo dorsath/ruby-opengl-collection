@@ -27,6 +27,9 @@ class Sprite
     glCallList(@tile_list)
     glDisable GL_TEXTURE_2D
     glDisable GL_BLEND
+
+    yield if block_given?
+
     glPopMatrix
   end
 
