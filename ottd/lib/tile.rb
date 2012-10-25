@@ -1,6 +1,6 @@
 class Tile
-  attr_reader :x, :y, :sprite
-  attr_accessor :highlight
+  attr_reader :x, :y
+  attr_accessor :highlight, :sprite
 
   def initialize(sprite, x, y)
     @sprite, @x, @y = sprite, x, y

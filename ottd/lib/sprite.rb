@@ -3,7 +3,7 @@ class Sprite
   ALPHA_COLOR = [0, 257, 65535]
   TILE_SIZE = 32
 
-  attr_reader :dimensions, :image_file
+  attr_reader :dimensions, :image_file, :tile_list
 
   def initialize(image_file, *dimensions)
     @dimensions = dimensions

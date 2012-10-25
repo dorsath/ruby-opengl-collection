@@ -25,6 +25,17 @@ class Tiles
     end
   end
 
+  def handle(button, x, y, tool)
+    if tool
+      tile = get_tile_from_absolute(x,y)
+      tile.sprite = tool if tile
+    end
+  end
+
+  def placeable
+    [@grass, @road]
+  end
+
   def add_building(sprite, x, y)
     @grid[x] ||= []
     @grid[x][y] = Tile.new(sprite, x, y)
