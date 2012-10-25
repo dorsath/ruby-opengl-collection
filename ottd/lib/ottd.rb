@@ -13,6 +13,11 @@ class Ottd < Base
     @tiles.draw
     show_fps
   end
+
+  def mouse_handler(button, state, x, y)
+    p @tiles.get_tile_coordinates_of_position(x,y)
+  end
+
 end
 
 Ottd.new

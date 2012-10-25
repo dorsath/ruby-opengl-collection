@@ -13,10 +13,22 @@ class Tiles
 
 
   def draw
-    @buildings[0].draw(2,1)
-    @buildings[1].draw(1,1)
-    (1..5).to_a.reverse.each do |x|
-      @road.draw(x,0)
+    # @buildings[0].draw(2,1)
+    # @buildings[1].draw(1,1)
+    10.times do |x|
+      10.times do |y|
+        @road.draw(x,y)
+      end
     end
+  end
+
+  def get_tile_coordinates_of_position(x,y)
+    x = 320 - x
+    y = 480 - y
+
+    _x = (y/32.0 + x/64.0).floor
+    _y = (-x/64.0 + y/32.0).floor
+
+    [_x,_y]
   end
 end

@@ -24,6 +24,7 @@ class Base
     glutIdleFunc :idle
     glutSpecialFunc :keyboard
     glutSpecialUpFunc :keyboard_up
+    glutMouseFunc :mouse
     $font.load
 
     reshape 640, 480
@@ -104,6 +105,12 @@ class Base
 
   def keyboard_up key, x, y
     @active_keys.delete(key)
+  end
+
+  def mouse *args
+    if args[1] == 1
+      mouse_handler(*args)
+    end
   end
 
   def show_fps
