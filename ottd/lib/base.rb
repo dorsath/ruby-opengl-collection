@@ -108,24 +108,21 @@ class Base
   end
 
   def show_fps
-    @avg ||= "loading..."
+    @frames_count  ||= 0
+    @frames_count += 1
 
-    fps_elements << dt
-    fps_elements.shift if fps_elements.length > 60
+    @fps ||= "loading..."
 
     if (time - fps_last_time) > 1
-      @avg = (1/(fps_elements.inject(:+)/fps_elements.length)).floor.to_s
+      @fps = @frames_count.to_s
+      @frames_count = 0
       @fps_last_time = time
     end
-    $font.print(@avg, 0, 0)
+
+    $font.print(@fps, 0, 0)
   end
 
   def fps_last_time
-    @fps_last_time ||= time
+    @fps_last_time ||= 0
   end
-
-  def fps_elements
-    @fps_elements ||= []
-  end
-
 end

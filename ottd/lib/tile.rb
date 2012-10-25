@@ -4,7 +4,7 @@ class Tile
   end
 
   def draw(x,y)
-    color = [1, 1, 1]
+    color = [rand,rand,rand]
 
     glPushMatrix
     glTranslate(320, 480, 0)
@@ -25,7 +25,7 @@ class Tile
     y2 = -50 * r2
     y3 = -100 * r2
 
-    glBegin(GL_LINE_LOOP) do
+    glBegin(GL_QUADS) do
       glVertex(x ,y ,0)
       glVertex(x2,y2 ,0)
       glVertex(x ,y3,0)
