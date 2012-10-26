@@ -13,4 +13,11 @@ class Tile
     end
   end
 
+  def adjacent_tiles
+    adjacent_offsets = [ [-1,0], [0, -1], [1, 0], [0, 1] ]
+
+    adjacent_offsets.map do |offsets|
+      tiles.get_tile(@x + offsets[0], @y + offsets[1])
+    end
+  end
 end

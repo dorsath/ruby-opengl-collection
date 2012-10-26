@@ -6,29 +6,30 @@ class Road < Tile
     @sprite = Sprite.load("roads/road_sl.png", 1,1)
     super
 
-    check_for_adjacent_roads(true) if tiles
+    flag_for_recheck
   end
 
-  def check_for_adjacent_roads(recheck = false, asking = [])
-    adjacent_offsets = [ [-1,0], [0, -1], [1, 0], [0, 1] ]
-    roads = []
+  def flag_for_recheck
+    @recheck = true
+  end
 
-    results = adjacent_offsets.map do |offsets|
-      tile = tiles.get_tile(@x + offsets[0], @y + offsets[1])
-      if tile.is_a?(Road)
-        roads << tile
-        true
-      else
-        roads << false
-        false
-      end
+  def draw
+    recheck?
+
+    super
+  end
+
+  def recheck?
+    if @recheck
+      check_for_adjacent_roads(true)
+      @recheck = false
     end
+  end
 
-    if asking.any?
-      results[adjacent_offsets.index(asking)] = true
-    end
+  def check_for_adjacent_roads(recheck = false)
+    results = adjacent_tiles
 
-    case(results)
+    case(results.map { |d| d.is_a?(Road)})
     when [true, true, true, true]
       @sprite = Sprite.load("roads/road_xx.png")
     when [true, true, false, false]
@@ -53,10 +54,9 @@ class Road < Tile
       @sprite = Sprite.load("roads/road_sr.png")
     end
 
-
     if recheck
-      roads.each_with_index do |road, index|
-        road.check_for_adjacent_roads(false, adjacent_offsets[index - 2]) if road
+      results.each do |result|
+        result.check_for_adjacent_roads if result.is_a?(Road)
       end
     end
   end
