@@ -1,6 +1,5 @@
 class Sprite
 
-  ALPHA_COLOR = [0, 257, 65535]
   TILE_SIZE = 32
 
   attr_reader :dimensions, :image_file, :tile_list
@@ -11,6 +10,23 @@ class Sprite
 
     @texture   = load_texture
     @tile_list = load_list
+
+    save
+  end
+
+  def save
+    @@sprites ||= {}
+    @@sprites[@image_file] = self
+  end
+
+  def self.load(image_file, x = 1, y = 1)
+    @@sprites ||= {}
+
+    if @@sprites[image_file]
+      @@sprites[image_file]
+    else
+      Sprite.new(image_file, x, y).save
+    end
   end
 
   def draw(x = 0,y = 0)

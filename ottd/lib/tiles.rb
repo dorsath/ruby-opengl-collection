@@ -1,44 +1,52 @@
 require_relative 'tile'
 require_relative 'sprite'
 
+Dir[File.dirname(__FILE__) + '/tiles/*.rb'].each {|file| require file }
+
+
 class Tiles
 
-  def initialize
+  def initialize(width, height)
+    @width, @height = width, height
     # @tile = Tile.new
-    @buildings = [
-      Sprite.new("building1.png", 1,2),
-      Sprite.new("building2.png", 1,2)
-    ]
-    @road  = Sprite.new("road.png", 1,1)
-    @grass = Sprite.new("grass.png", 1,1)
+    # @buildings = [
+    #   Sprite.new("building1.png", 1,2),
+    #   Sprite.new("building2.png", 1,2)
+    # ]
+    
+    @grass = Grass
+    @road  = Road
+    @building = Building
 
     @grid = []
     10.times do |x|
       10.times do |y|
-        add_building(@grass,x,y)
+        set_tile(@grass,x,y)
       end
     end
 
     5.times do |x|
-      add_building(@road, x,0)
-      add_building(@buildings[0],x, 1)
+      set_tile(@road, x,0)
+      set_tile(@building, x, 1)
     end
   end
 
   def handle(button, x, y, tool)
     if tool
-      tile = get_tile_from_absolute(x,y)
-      tile.sprite = tool if tile
+      x, y = get_tile_coordinates_of_position(x,y)
+      set_tile(tool, x,y)
     end
   end
 
   def placeable
-    [@grass, @road]
+    [@road, @grass]
   end
 
-  def add_building(sprite, x, y)
-    @grid[x] ||= []
-    @grid[x][y] = Tile.new(sprite, x, y)
+  def set_tile(tile, x, y)
+    if (0..@width).include?(x) && (0..@height).include?(y)
+      @grid[x] ||= []
+      @grid[x][y] = tile.new(x, y)
+    end
   end
 
   def draw

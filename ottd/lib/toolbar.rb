@@ -17,7 +17,7 @@ class Toolbar
       glCallList(@button)
       glTranslate(32,32,0)
       glEnable(GL_BLEND)
-      glCallList(item.tile_list)
+      glCallList(item.new.sprite.tile_list)
       glDisable(GL_BLEND)
       glTranslate(32,-32,0)
     end

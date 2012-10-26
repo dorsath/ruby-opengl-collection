@@ -6,7 +6,7 @@ class Ottd < Base
   def initialize
     super
 
-    @tiles = Tiles.new
+    @tiles = Tiles.new(10, 10) #size of field
     @toolbar = Toolbar.new(@tiles.placeable)
     start
   end
