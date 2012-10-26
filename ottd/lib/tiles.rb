@@ -45,7 +45,7 @@ class Tiles
   def set_tile(tile, x, y)
     if (0..@width).include?(x) && (0..@height).include?(y)
       @grid[x] ||= []
-      @grid[x][y] = tile.new(x, y)
+      @grid[x][y] = tile.new(x, y, self)
     end
   end
 
@@ -63,6 +63,12 @@ class Tiles
       @last_highlight.highlight = false if @last_highlight
 
       @last_highlight = tile
+    end
+  end
+
+  def get_tile(x,y)
+    if @grid[x].is_a?(Array)
+      @grid[x][y]
     end
   end
 
