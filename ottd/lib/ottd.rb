@@ -6,16 +6,23 @@ class Ottd < Base
   def initialize
     super
 
-    @tiles = Tiles.new(10, 10) #size of field
+    @tiles = Tiles.new(64, 64) #size of field
     @toolbar = Toolbar.new(@tiles.placeable)
     start
   end
 
   def draw
     @tiles.draw
+    glLoadIdentity
     @toolbar.draw
     glLoadIdentity
     show_fps
+
+    handle_keys
+  end
+
+  def handle_keys
+    @tiles.handle_keys(@active_keys, dt)
   end
 
   def mouse_handler(button, state, x, y)

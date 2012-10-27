@@ -4,9 +4,10 @@ class Toolbar
   attr_reader :items, :current_tool
 
   def initialize(items)
-    @items = items
+    @items = items.map(&:new)
     @button = load("button.png")
     @current_tool = nil
+
   end
 
   def draw
@@ -17,7 +18,7 @@ class Toolbar
       glCallList(@button)
       glTranslate(32,32,0)
       glEnable(GL_BLEND)
-      glCallList(item.new.sprite.tile_list)
+      glCallList(item.sprite.tile_list)
       glDisable(GL_BLEND)
       glTranslate(32,-32,0)
     end
@@ -27,7 +28,7 @@ class Toolbar
 
   def select_tool(x,y)
     if y < 32 && x > 100 && x < @items.length * TILE_SIZE  + 100
-      @current_tool = @items[((x - 100)/TILE_SIZE.to_f).floor]
+      @current_tool = @items[((x - 100)/TILE_SIZE.to_f).floor].class
     end
   end
 

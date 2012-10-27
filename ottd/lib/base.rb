@@ -16,7 +16,7 @@ class Base
     glutInitWindowPosition 0, 0
 
     @window = glutCreateWindow "Wat"
-    @active_keys = []
+    @active_keys = {}
     @last_time = time
 
     glutDisplayFunc :draw_gl_scene

@@ -8,6 +8,7 @@ class Tiles
 
   def initialize(width, height)
     @width, @height = width, height
+    @camera = [0,50]
     # @tile = Tile.new
     # @buildings = [
     #   Sprite.new("building1.png", 1,2),
@@ -19,8 +20,8 @@ class Tiles
     @building = Building
 
     @grid = []
-    10.times do |x|
-      10.times do |y|
+    width.times do |x|
+      height.times do |y|
         set_tile(@grass,x,y)
       end
     end
@@ -28,6 +29,23 @@ class Tiles
     5.times do |x|
       set_tile(@road, x,0)
       set_tile(@building, x, 1)
+    end
+  end
+
+  def handle_keys(active_keys, dt)
+    camera_speed = 500
+
+    if active_keys[100]
+      @camera[0] += camera_speed * dt
+    end
+    if active_keys[101]
+      @camera[1] += camera_speed * dt
+    end
+    if active_keys[102]
+      @camera[0] -= camera_speed * dt
+    end
+    if active_keys[103]
+      @camera[1] -= camera_speed * dt
     end
   end
 
@@ -39,7 +57,7 @@ class Tiles
   end
 
   def placeable
-    [@road, @grass]
+    [@road, @grass, @building]
   end
 
   def set_tile(tile, x, y)
@@ -50,6 +68,7 @@ class Tiles
   end
 
   def draw
+    glTranslate(*@camera, 0)
     @grid.reverse.each_with_index do |row, x|
       row.reverse.each_with_index do |tile, y|
         tile.draw
@@ -82,8 +101,8 @@ class Tiles
   end
 
   def get_tile_coordinates_of_position(x,y)
-    x = 320 - x
-    y = 480 - y
+    x = 320 - x + @camera[0]
+    y = 480 - y + @camera[1]
 
     _x = (y/32.0 + x/64.0).floor
     _y = (-x/64.0 + y/32.0).floor
