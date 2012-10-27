@@ -25,6 +25,10 @@ class Ottd < Base
     @tiles.handle_keys(@active_keys, dt)
   end
 
+  def handle_single_keys(key, x, y)
+    @tiles.handle_single_keys(key)
+  end
+
   def mouse_handler(button, state, x, y)
     @toolbar.select_tool(x,y)
     @tiles.handle(button, x, y, @toolbar.current_tool) if state == 1

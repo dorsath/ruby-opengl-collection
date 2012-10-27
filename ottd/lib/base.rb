@@ -101,7 +101,7 @@ class Base
   def keyboard key, x, y
     exit_game if key == 27
     @active_keys[key] = true
-    #active_scene.keyboard(key)
+    handle_single_keys(key, x, y)
   end
 
   def keyboard_up key, x, y

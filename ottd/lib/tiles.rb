@@ -9,6 +9,7 @@ class Tiles
   def initialize(width, height)
     @width, @height = width, height
     @camera = [0,50]
+    @zoom = 1
     # @tile = Tile.new
     # @buildings = [
     #   Sprite.new("building1.png", 1,2),
@@ -34,7 +35,6 @@ class Tiles
 
   def handle_keys(active_keys, dt)
     camera_speed = 500
-
     if active_keys[100]
       @camera[0] += camera_speed * dt
     end
@@ -46,6 +46,16 @@ class Tiles
     end
     if active_keys[103]
       @camera[1] -= camera_speed * dt
+    end
+  end
+
+  def handle_single_keys(key)
+    zoom_stages = [0.25,0.5,1,2]
+    case key
+    when 45
+      @zoom = zoom_stages[zoom_stages.index(@zoom) - 1]
+    when 61
+      @zoom = zoom_stages[zoom_stages.index(@zoom) + 1] if zoom_stages.index(@zoom) + 1 < zoom_stages.length
     end
   end
 
@@ -69,6 +79,7 @@ class Tiles
 
   def draw
     glTranslate(*@camera, 0)
+    glScale(@zoom, @zoom, @zoom)
     @grid.reverse.each_with_index do |row, x|
       row.reverse.each_with_index do |tile, y|
         tile.draw
