@@ -4,7 +4,7 @@ class Level
   INVADER_SPACING = 20
   INVADER_OFFSET = 50
   INVADER_SPEED = 100
-  BOMBS_PER_MINUTE = 2000
+  BOMBS_PER_MINUTE = 200
   BOMB_VELOCITY = 300
 
   def initialize(aliens, game)
