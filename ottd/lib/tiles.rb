@@ -7,6 +7,8 @@ Dir[File.dirname(__FILE__) + '/tiles/*.rb'].each {|file| require file }
 
 class Tiles
 
+  FORCE_REDRAW_TIME = 0.5
+
   def initialize(width, height)
     @width, @height = width, height
     @camera = [0,50]
@@ -20,6 +22,7 @@ class Tiles
     @road  = Road
     @building = Building
     @bus_station = BusStation
+    @last_force_redraw_time = time
 
     @grid = []
     width.times do |x|
@@ -80,6 +83,10 @@ class Tiles
     [@road, @grass, @building, @bus_station]
   end
 
+  def time
+    Time.now.to_f
+  end
+
   def set_tile(tile, x, y)
     if (0..@width).include?(x) && (0..@height).include?(y)
       @grid[x] ||= []
@@ -126,6 +133,11 @@ class Tiles
       glVertex(0, 480, 0)
     end
     glDisable GL_TEXTURE_2D
+
+    if time - @last_force_redraw_time > FORCE_REDRAW_TIME
+      @redraw = true
+      @last_force_redraw_time = time
+    end
   end
 
   def initBuffer
