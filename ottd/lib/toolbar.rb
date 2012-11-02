@@ -32,6 +32,12 @@ class Toolbar
     end
   end
 
+  def handle_single_keys(key)
+    if key == 27
+      @current_tool = nil
+    end
+  end
+
   def load(image_path)
     load_list(load_texture(image_path))
   end

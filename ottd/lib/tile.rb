@@ -8,7 +8,7 @@ class Tile
   end
 
   def draw
-    @sprite.draw(@x,@y) do |sprite|
+    @sprite.draw(x,y) do |sprite|
       sprite.draw_highlight if @highlight
     end
   end

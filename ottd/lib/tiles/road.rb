@@ -29,7 +29,17 @@ class Road < Tile
   def check_for_adjacent_roads(recheck = false)
     results = adjacent_tiles
 
-    case(results.map { |d| d.is_a?(Road)})
+    sprite_based_on_adjecant_tiles(results)
+
+    if recheck
+      results.each do |result|
+        result.check_for_adjacent_roads if result.is_a?(Road)
+      end
+    end
+  end
+
+  def sprite_based_on_adjecant_tiles(tiles)
+    case(tiles.map { |d| d.is_a?(Road)})
     when [true, true, true, true]
       @sprite = Sprite.load("roads/road_xx.png")
     when [true, true, false, false]
@@ -54,10 +64,5 @@ class Road < Tile
       @sprite = Sprite.load("roads/road_sr.png")
     end
 
-    if recheck
-      results.each do |result|
-        result.check_for_adjacent_roads if result.is_a?(Road)
-      end
-    end
   end
 end

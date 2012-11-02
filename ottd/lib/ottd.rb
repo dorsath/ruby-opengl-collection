@@ -27,6 +27,7 @@ class Ottd < Base
 
   def handle_single_keys(key, x, y)
     @tiles.handle_single_keys(key)
+    @toolbar.handle_single_keys(key)
   end
 
   def mouse_handler(button, state, x, y)

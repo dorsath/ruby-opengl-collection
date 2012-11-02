@@ -99,7 +99,7 @@ class Base
 
 
   def keyboard key, x, y
-    exit_game if key == 27
+    exit_game if key == 113
     @active_keys[key] = true
     handle_single_keys(key, x, y)
   end

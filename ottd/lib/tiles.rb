@@ -1,6 +1,7 @@
 require_relative 'tile'
 require_relative 'sprite'
 
+require_relative 'tiles/road'
 Dir[File.dirname(__FILE__) + '/tiles/*.rb'].each {|file| require file }
 
 
@@ -15,10 +16,10 @@ class Tiles
     #   Sprite.new("building1.png", 1,2),
     #   Sprite.new("building2.png", 1,2)
     # ]
-    
     @grass = Grass
     @road  = Road
     @building = Building
+    @bus_station = BusStation
 
     @grid = []
     width.times do |x|
@@ -76,7 +77,7 @@ class Tiles
   end
 
   def placeable
-    [@road, @grass, @building]
+    [@road, @grass, @building, @bus_station]
   end
 
   def set_tile(tile, x, y)
