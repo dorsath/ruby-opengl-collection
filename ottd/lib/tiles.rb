@@ -13,6 +13,7 @@ class Tiles
     @width, @height = width, height
     @camera = [0,50]
     @zoom = 1
+    @bus_stations = []
     # @tile = Tile.new
     # @buildings = [
     #   Sprite.new("building1.png", 1,2),
@@ -35,6 +36,9 @@ class Tiles
       set_tile(@road, x,0)
       set_tile(@building, x, 1)
     end
+
+    set_tile(@bus_station, 0,0)
+    set_tile(@bus_station, 5,0)
 
     initBuffer
     @redraw = true
@@ -69,8 +73,68 @@ class Tiles
     when 61
       @redraw = true
       @zoom = zoom_stages[zoom_stages.index(@zoom) + 1] if zoom_stages.index(@zoom) + 1 < zoom_stages.length
+    when 32
+      @bus_stations.combination(2).each do |stations|
+        find_path(*stations)
+      end
     end
   end
+
+  def find_path(from, to)
+    @road_tree = {}
+    found = fill_road_tree([to], 0, from)
+
+    if found
+      distance = @road_tree.values.last
+      path = [from]
+
+      (0..(distance - 1)).to_a.reverse.each do |step|
+        path << path.last.adjacent_tiles.select { |tile|
+          @road_tree[tile.position] == step
+        }.first
+      end
+
+      return path
+    end
+
+    false
+  end
+
+  def fill_road_tree(outer_tiles, depth, target)
+    new_outer_tiles = []
+
+    outer_tiles.each do |tile|
+      new_outer_tiles += unseen_adjacent_roads(tile, depth)
+    end
+
+    found = new_outer_tiles.include?(target)
+
+    if new_outer_tiles.any? and found == false
+      found = fill_road_tree(new_outer_tiles, depth + 1, target)
+    end
+
+    found
+  end
+
+  def unseen_adjacent_roads(to, depth)
+    to.adjacent_tiles.select { |f|
+      f.is_a?(Road) && @road_tree[f.position].nil?
+    }.map { |tile|
+      @road_tree[tile.position] = depth
+      tile
+    }
+  end
+
+
+  # def adjacent_tiles(last_tile,depth)
+  #   return if depth > 10
+  #   last_tile.adjacent_tiles.select { |f|
+  #     f.is_a?(Road) && @road_tree[f.position].nil?
+  #   # }.count
+  #   }.map { |tile|
+  #     adjacent_tiles(tile, depth + 1)
+  #   }
+  # end
 
   def handle(button, x, y, tool)
     if tool
@@ -90,7 +154,10 @@ class Tiles
   def set_tile(tile, x, y)
     if (0..@width).include?(x) && (0..@height).include?(y)
       @grid[x] ||= []
+      @bus_station.delete(@grid[x][y]) if @grid[x][y].is_a?(BusStation)
       @grid[x][y] = tile.new(x, y, self)
+      @bus_stations << @grid[x][y] if tile == BusStation
+
       @redraw = true
     end
   end

@@ -13,6 +13,10 @@ class Tile
     end
   end
 
+  def position
+    [x,y]
+  end
+
   def adjacent_tiles
     adjacent_offsets = [ [-1,0], [0, -1], [1, 0], [0, 1] ]
 
