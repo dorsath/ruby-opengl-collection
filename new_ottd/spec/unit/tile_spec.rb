@@ -12,4 +12,5 @@ describe Tile do
     subject.occupation = occupation
     subject.occupation.should == occupation
   end
+
 end

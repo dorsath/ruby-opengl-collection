@@ -1,6 +1,15 @@
 class Grid
+  TILE_SIZE = 32
+
   def initialize
     @grid = {}
+  end
+
+  def draw
+    @grid.each do |position, tile|
+      GL.Translate(0,0,0)
+      tile.draw
+    end
   end
 
   def set_tile(tile, *position)
@@ -21,5 +30,9 @@ class Grid
     _y = (-x/64.0 + y/32.0).floor
 
     [_x,_y]
+  end
+
+  def screen_coordinate_from_position(x, y)
+    [320 + TILE_SIZE * -x + TILE_SIZE * y, 480 + (TILE_SIZE * -x + TILE_SIZE * -y) * 0.5]
   end
 end
