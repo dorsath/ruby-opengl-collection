@@ -10,4 +10,7 @@ class Ottd < Base
   end
 end
 
-Ottd.new
+game = Ottd.new
+
+
+game.start

@@ -5,9 +5,12 @@ class Base
   include Glu
   include Glut
 
+  attr_reader :draw_items
+
   def initialize
     @resolution = [640,480]
     @active_keys= []
+    @draw_items = []
     glutInit
 
     glutInitDisplayMode GLUT_RGB | GLUT_DOUBLE | GLUT_ALPHA | GLUT_DEPTH
@@ -24,6 +27,9 @@ class Base
 
     reshape *@resolution
     init_gl
+  end
+
+  def start
     glutMainLoop
   end
 
@@ -33,9 +39,19 @@ class Base
     glClear GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT
     glLoadIdentity
 
+    draw
+
     #active_scene.handle_keys(@active_keys)
 
     glutSwapBuffers
+  end
+
+  def draw
+    @draw_items.each(&:draw)
+  end
+
+  def add_draw_item(item)
+    @draw_items << item
   end
 
   def reshape width, height
