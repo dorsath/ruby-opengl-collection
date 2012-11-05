@@ -1,3 +1,4 @@
 class Tile
-  attr_accessor :position
+  attr_accessor :position, :occupation
+
 end
