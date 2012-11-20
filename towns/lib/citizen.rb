@@ -10,6 +10,10 @@ class Citizen
         Sprite.find("citizenmale.png", (d * 64), (i * 65), 60, 65)
       end
     end
+
+    @current_sprite_direction = 0
+    @offset = [0, 0]
+    @next_step = [0, 0]
   end
 
   def move_towards(destination)

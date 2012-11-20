@@ -7,6 +7,7 @@ describe Hitbox do
 
     it "should return true when its outside the circle" do
       Hitbox.circle(coordinates: [30, 30], distance: 30).check(60,60).should_not be_true 
+      Hitbox.circle(coordinates: [60, 30], distance: 30).check(20,30).should_not be_true
     end
   end
 

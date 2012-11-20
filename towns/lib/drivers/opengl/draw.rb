@@ -28,15 +28,13 @@ module Opengl
     def self.button(options)
       glPushMatrix
       offset = options[:location].map(&:min)
-      w, h   = options[:location].map(&:max)
+      w, h   = options[:location].map { |axis| axis.max - axis.min }
 
-
+      glTranslate(*offset, 0)
       glEnable GL_TEXTURE_2D
       glEnable(GL_BLEND)
       if options[:background]
         glBindTexture(GL_TEXTURE_2D, options[:background].texture_id)
-
-        glTranslate(*offset, 0)
         glBegin(GL_QUADS) do
           glTexCoord2d(0, 0); glVertex(0, 0, 0)
           glTexCoord2d(1, 0); glVertex(w, 0, 0)
@@ -46,7 +44,6 @@ module Opengl
       end
 
       glBindTexture(GL_TEXTURE_2D, options[:texture].texture_id)
-      glTranslate(*offset, 0)
       glBegin(GL_QUADS) do
         glTexCoord2d(0, 0); glVertex(0, 0, 0)
         glTexCoord2d(1, 0); glVertex(w, 0, 0)
@@ -60,25 +57,25 @@ module Opengl
     end
 
     def self.citizen(options)
-      w, h = 40, 40
+      w, h = 40, -40
       position = options[:position]
 
       glPushMatrix
-      glTranslate(position[0] + 8, position[1] + 2, 0)
+      glTranslate(position[0] - 22, position[1] - 8, 0)
       glBindTexture(GL_TEXTURE_2D, options[:texture][:texture_id])
       glEnable GL_TEXTURE_2D
       glEnable(GL_BLEND)
       glBegin(GL_QUADS) do
         if options[:texture][:flipped]
-          glTexCoord2d(1, 0); glVertex(0, 0, 0)
-          glTexCoord2d(0, 0); glVertex(w, 0, 0)
-          glTexCoord2d(0, 1); glVertex(w, h, 0)
-          glTexCoord2d(1, 1); glVertex(0, h, 0)
+          glTexCoord2d(1, 0); glVertex(0, h, 0)
+          glTexCoord2d(0, 0); glVertex(w, h, 0)
+          glTexCoord2d(0, 1); glVertex(w, 0, 0)
+          glTexCoord2d(1, 1); glVertex(0, 0, 0)
         else
-          glTexCoord2d(0, 0); glVertex(0, 0, 0)
-          glTexCoord2d(1, 0); glVertex(w, 0, 0)
-          glTexCoord2d(1, 1); glVertex(w, h, 0)
-          glTexCoord2d(0, 1); glVertex(0, h, 0)
+          glTexCoord2d(0, 0); glVertex(0, h, 0)
+          glTexCoord2d(1, 0); glVertex(w, h, 0)
+          glTexCoord2d(1, 1); glVertex(w, 0, 0)
+          glTexCoord2d(0, 1); glVertex(0, 0, 0)
         end
       end
       glDisable GL_TEXTURE_2D

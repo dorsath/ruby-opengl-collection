@@ -40,7 +40,9 @@ class Grid
   def mouse_handler(*args)
     tile = get_tile(*grid_position_from_coordinates(*args[2..3]))
     if tile && active_tool
-      tile.occupation = active_tool.new
+      unless active_tool.is_a?(Symbol)
+        tile.occupation = active_tool.new
+      end
     end
   end
 end

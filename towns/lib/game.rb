@@ -24,18 +24,19 @@ class Towns < Walker::Base
     end
     @grid.get_tile(1,1).occupation = Tree.new
 
+    @population = Population.new(grid: @grid)
+    citizen = @population.new_citizen(position: [5,0])
+
+    # citizen.move_towards [5, 5]
+
     @interface = Interface.new
     @interface.add_button(->{@grid.active_tool = Tree}, {location: [0..60,0..60], texture: Sprite.find("ui.png", 130, 737, 60, 60), hitbox: Hitbox.circle(coordinates: [30, 30], distance: 30)})
-
-    @population = Population.new(grid: @grid)
-    citizen = @population.new_citizen(position: [7,1])
-
-    citizen.move_towards [5, 5]
+    @interface.add_button(->{@grid.active_tool = :move}, {location: [60..120,0..60], texture: Sprite.find("ui.png", 130, 320, 60, 60), hitbox: Hitbox.circle(coordinates: [90, 30], distance: 30)})
 
 
     add(@grid)
-    add(@interface)
     add(@population)
+    add(@interface)
   end
 
 end
