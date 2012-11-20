@@ -64,7 +64,7 @@ module Opengl
       position = options[:position]
 
       glPushMatrix
-      glTranslate(position[0] + 8, position[1] - 3, 0)
+      glTranslate(position[0] + 8, position[1] + 2, 0)
       glBindTexture(GL_TEXTURE_2D, options[:texture][:texture_id])
       glEnable GL_TEXTURE_2D
       glEnable(GL_BLEND)

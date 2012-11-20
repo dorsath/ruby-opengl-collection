@@ -1,12 +1,14 @@
 class Citizen
-  attr_reader :position, :current_sprite, :destination
+  attr_reader :position, :destination
 
   def initialize(options)
     @position = options[:position]
     @grid = options[:grid]
 
     @sprites = (0..4).map do |i|
-      Sprite.find("citizenmale.png", 0, (i * 65), 60, 60)
+      (0..5).map do |d|
+        Sprite.find("citizenmale.png", (d * 64), (i * 65), 60, 65)
+      end
     end
   end
 
@@ -16,7 +18,7 @@ class Citizen
     @next_step = find_next_step
     @start_time = time
     @offset = [0, 0]
-    @current_sprite = sprite_for_current_direction
+    @current_sprite_direction = sprite_for_current_direction
   end
 
   def find_next_step
@@ -38,7 +40,7 @@ class Citizen
       @offset = [0, 0]
       @position = [position[0] + @next_step[0], position[1] + @next_step[1]]
       @next_step = find_next_step
-      @current_sprite = sprite_for_current_direction
+      @current_sprite_direction = sprite_for_current_direction
       @start_time = time
     end
   end
@@ -67,28 +69,44 @@ class Citizen
     }
   end
 
-  def sprite_for_current_direction
-    return @current_sprite if @next_step == [0, 0]
-    sprite_id = case(@next_step) 
-      when [1, 1]
-        1
-      when [-1, -1]
-        0
-      when [1, 0], [0, 1]
-        2
-      when [1, -1], [-1, 1]
-        3
-      when [0, -1], [-1, 0]
-        4
-      else
-        @last_sprite_id
-      end
+  def current_sprite
+    @current_step ||= 0
+    @step_time ||= time
 
-    {texture_id: @sprites[sprite_id].texture_id, flipped: flipped?}
+    if time - @step_time > 0.1
+      @current_step += 1
+      @step_time = time
+      @current_step = 0 if @current_step > 5 || @next_step == [0, 0]
+    end
+
+    sprite = @sprites[@current_sprite_direction][@current_step].texture_id
+
+    {texture_id: sprite, flipped: @flipped}
+  end
+
+  def sprite_for_current_direction
+    return @current_sprite_direction if @next_step == [0, 0]
+
+    flipped?
+
+    case(@next_step) 
+    when [1, 1]
+      1
+    when [-1, -1]
+      0
+    when [1, 0], [0, 1]
+      2
+    when [1, -1], [-1, 1]
+      3
+    when [0, -1], [-1, 0]
+      4
+    else
+      @current_sprite_direction
+    end
   end
 
   def flipped?
-    [[0, 1], [-1, 1], [-1, 0]].include?(@next_step)
+    @flipped = [[0, 1], [-1, 1], [-1, 0]].include?(@next_step)
   end
 
   def absolute_position

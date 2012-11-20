@@ -30,7 +30,7 @@ class Towns < Walker::Base
     @population = Population.new(grid: @grid)
     citizen = @population.new_citizen(position: [7,1])
 
-    citizen.move_towards [5, 2]
+    citizen.move_towards [5, 5]
 
 
     add(@grid)
