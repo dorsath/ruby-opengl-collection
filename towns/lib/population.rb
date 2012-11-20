@@ -4,15 +4,19 @@ class Population
   def initialize(options)
     @grid    = options[:grid]
     @citizen = options[:citizen] || []
+
   end
 
-  def add_citizen(citizen)
+  def new_citizen(options)
+    options[:grid] = @grid
+    citizen = Citizen.new(options)
     @citizen << citizen
+
+    citizen
   end
 
   def draw
-    @citizen.each do |citizen|
-    end
+    @citizen.each(&:draw)
   end
 
 end

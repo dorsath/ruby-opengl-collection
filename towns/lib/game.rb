@@ -28,7 +28,10 @@ class Towns < Walker::Base
     @interface.add_button(->{@grid.active_tool = Tree}, {location: [0..60,0..60], texture: Sprite.find("ui.png", 130, 737, 60, 60), hitbox: Hitbox.circle(coordinates: [30, 30], distance: 30)})
 
     @population = Population.new(grid: @grid)
-    @population.add_citizen(Citizen.new(position: [5,1]))
+    citizen = @population.new_citizen(position: [5,1])
+
+    citizen.move_towards [7, 2]
+
 
     add(@grid)
     add(@interface)
