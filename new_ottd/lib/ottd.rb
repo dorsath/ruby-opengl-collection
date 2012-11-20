@@ -1,6 +1,8 @@
 require_relative 'base'
+require_relative 'texture'
 require_relative 'grid'
 require_relative 'tile'
+require_relative 'grass'
 
 class Ottd < Base
 
@@ -17,7 +19,7 @@ grid = Grid.new
 
 10.times do |x|
   10.times do |y|
-    grid.set_tile(Tile.new, x, y)
+    grid.set_tile(Grass.new, x, y)
   end
 end
 

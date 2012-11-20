@@ -1,16 +1,15 @@
 class Grid
   TILE_SIZE = 32
 
+  attr_accessor :active_tool
+
   def initialize
     @grid = {}
   end
 
   def draw
     @grid.each do |position, tile|
-      GL.PushMatrix
-      GL.Translate(*screen_coordinate_from_position(*position), 0)
-      tile.draw
-      GL.PopMatrix
+      tile.draw(screen_coordinate_from_position(*position))
     end
   end
 
@@ -36,5 +35,12 @@ class Grid
 
   def screen_coordinate_from_position(x, y)
     [320 + TILE_SIZE * -x + TILE_SIZE * y, 480 + (TILE_SIZE * -x + TILE_SIZE * -y) * 0.5]
+  end
+
+  def mouse_handler(*args)
+    tile = get_tile(*grid_position_from_coordinates(*args[2..3]))
+    if tile && active_tool
+      tile.occupation = active_tool.new
+    end
   end
 end

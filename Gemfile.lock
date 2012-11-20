@@ -1,6 +1,11 @@
 GEM
   remote: http://rubygems.org/
   specs:
+    bson (1.7.0)
+    bson_ext (1.7.0)
+      bson (~> 1.7.0)
+    mongo (1.7.0)
+      bson (~> 1.7.0)
     opengl (0.8.0.pre1)
     png (1.2.0)
     rmagick (2.13.1)
@@ -9,6 +14,9 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  bson
+  bson_ext
+  mongo
   opengl
   png
   rmagick
