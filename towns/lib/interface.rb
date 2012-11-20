@@ -19,8 +19,14 @@ class Interface
 
   def check_for_interface(x, y)
     @buttons.each do |button|
-      button[:action].call if within_hitbox?(button[:options][:hitbox], x, y)
+      if within_hitbox?(button[:options][:hitbox], x, y)
+        button[:action].call 
+
+        return true
+      end
     end
+    
+    false
   end
 
   def mouse_handler(*args)

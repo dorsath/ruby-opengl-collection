@@ -27,6 +27,8 @@ class Population
         citizen.move_towards(position)
       end
     end
+
+    false
   end
 
 end

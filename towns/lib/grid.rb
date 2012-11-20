@@ -44,5 +44,7 @@ class Grid
         tile.occupation = active_tool.new
       end
     end
+
+    false
   end
 end

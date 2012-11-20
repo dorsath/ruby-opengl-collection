@@ -33,7 +33,6 @@ class Towns < Walker::Base
     @interface.add_button(->{@grid.active_tool = Tree}, {location: [0..60,0..60], texture: Sprite.find("ui.png", 130, 737, 60, 60), hitbox: Hitbox.circle(coordinates: [30, 30], distance: 30)})
     @interface.add_button(->{@grid.active_tool = :move}, {location: [60..120,0..60], texture: Sprite.find("ui.png", 130, 320, 60, 60), hitbox: Hitbox.circle(coordinates: [90, 30], distance: 30)})
 
-
     add(@grid)
     add(@population)
     add(@interface)

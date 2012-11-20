@@ -29,8 +29,10 @@ module Walker
     end
 
     def mouse_handler(*args)
-      @draw_items.each do |item|
-        item.mouse_handler(*args) if item.respond_to?(:mouse_handler)
+      @draw_items.reverse.each do |item|
+        if item.respond_to?(:mouse_handler)
+          break if item.mouse_handler(*args)
+        end
       end
     end
 
