@@ -65,14 +65,21 @@ module Opengl
 
       glPushMatrix
       glTranslate(position[0] + 8, position[1] - 3, 0)
-      glBindTexture(GL_TEXTURE_2D, options[:texture].texture_id)
+      glBindTexture(GL_TEXTURE_2D, options[:texture][:texture_id])
       glEnable GL_TEXTURE_2D
       glEnable(GL_BLEND)
       glBegin(GL_QUADS) do
-        glTexCoord2d(0, 0); glVertex(0, 0, 0)
-        glTexCoord2d(1, 0); glVertex(w, 0, 0)
-        glTexCoord2d(1, 1); glVertex(w, h, 0)
-        glTexCoord2d(0, 1); glVertex(0, h, 0)
+        if options[:texture][:flipped]
+          glTexCoord2d(1, 0); glVertex(0, 0, 0)
+          glTexCoord2d(0, 0); glVertex(w, 0, 0)
+          glTexCoord2d(0, 1); glVertex(w, h, 0)
+          glTexCoord2d(1, 1); glVertex(0, h, 0)
+        else
+          glTexCoord2d(0, 0); glVertex(0, 0, 0)
+          glTexCoord2d(1, 0); glVertex(w, 0, 0)
+          glTexCoord2d(1, 1); glVertex(w, h, 0)
+          glTexCoord2d(0, 1); glVertex(0, h, 0)
+        end
       end
       glDisable GL_TEXTURE_2D
       glDisable GL_BLEND 
